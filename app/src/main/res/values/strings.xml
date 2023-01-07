@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">MoviesApp</string>
+    <string name="example_gmail_com">example@gmail.com</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="enter_your_password">Enter Your Password</string>
+    <string name="hi_welcome_back">Hi, Welcome Back! 👋</string>
+    <string name="remember_me">Remember Me</string>
+    <string name="login">Login</string>
+    <string name="opps">Opps!</string>
+    <string name="text_internet_error">Seems like you don\'t have internet connection. Check it and try again.</string>
+    <string name="try_again">Try Again</string>
+    <string name="username">Username</string>
+    <string name="enter_your_username">Enter Your Username</string>
+    <string name="home_title">What do you want to watch?</string>
+    <string name="search">Search</string>
+    <string name="no_search_results_title">We Are Sorry, We Can Not Find The Movie :(</string>
+    <string name="no_search_results_desc">Find your movie by Type title, categories, years, etc</string>
+    <string name="detail">Detail</string>
+    <string name="watch_list">Watch list</string>
+    <string name="empty_watchlist_title">There Is No Movie Yet!</string>
+    <string name="home">Home</string>
+    <string name="something_went_wrong">Something went wrong!</string>
+</resources>

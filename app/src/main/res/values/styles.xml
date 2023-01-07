@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.App.TextInputLayoutLogin" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxStrokeColor">#67686D</item>
+        <item name="android:textColorHint">#67686D</item>
+        <item name="editTextStyle">@style/TextInputEditTextLogin</item>
+    </style>
+
+    <style name="TextInputEditTextLogin" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">#ECECEC</item>
+        <item name="android:textSize">16sp</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="android:textCursorDrawable">@drawable/grey_color_cursor</item>
+    </style>
+
+    <style name="Widget.App.TextInputLayoutGrey" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="strokeWidth">0dp</item>
+        <item name="boxStrokeWidthFocused">0dp</item>
+        <item name="android:textColorHint">#67686D</item>
+        <item name="boxCornerRadiusBottomEnd">30dp</item>
+        <item name="boxCornerRadiusBottomStart">30dp</item>
+        <item name="boxCornerRadiusTopEnd">30dp</item>
+        <item name="boxCornerRadiusTopStart">30dp</item>
+        <item name="boxBackgroundColor">#3A3F47</item>
+    </style>
+
+    <style name="TextInputEditTextGrey" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+        <item name="android:textCursorDrawable">@drawable/grey_color_cursor</item>
+    </style>
+
+    <style name="EditTextLabel" parent="Widget.AppCompat.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">#ECECEC</item>
+        <item name="fontFamily">@font/poppins_regular</item>
+    </style>
+
+    <style name="TitleTextView.H1" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+    </style>
+    
+    <style name="TitleTextView.H2" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/tab_title_color</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/montserrat_semi_bold</item>
+    </style>
+
+</resources>

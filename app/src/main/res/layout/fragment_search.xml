@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        android:text="@string/search"
+        style="@style/TitleTextView.H2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="21dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_search"
+        style="@style/Widget.App.TextInputLayoutGrey"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="21dp"
+        android:layout_marginTop="44dp"
+        app:layout_constraintTop_toTopOf="@id/tv_title"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            style="@style/TextInputEditTextGrey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_search"
+            android:hint="@string/search"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+    
+    <androidx.recyclerview.widget.RecyclerView
+        android:paddingBottom="160dp"
+        android:clipToPadding="false"
+        android:id="@+id/rv_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/til_search"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="21dp"/>
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_no_results"
+        android:src="@drawable/img_no_results"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:width="200dp"
+        android:gravity="center"
+        android:id="@+id/tv_no_search_result_title"
+        android:textSize="16sp"
+        android:textColor="#EBEBEF"
+        android:text="@string/no_search_results_title"
+        android:fontFamily="@font/montserrat_semi_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/iv_no_results"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="16dp"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:gravity="center"
+        android:text="@string/no_search_results_desc"
+        android:id="@+id/tv_no_search_result_desc"
+        android:textColor="#92929D"
+        android:textSize="12sp"
+        android:fontFamily="@font/montserrat_medium"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_no_search_result_title"
+        app:layout_constraintLeft_toLeftOf="@id/tv_no_search_result_title"
+        app:layout_constraintRight_toRightOf="@id/tv_no_search_result_title"
+        android:layout_marginTop="8dp"/>
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/no_search_results"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:visibility="invisible"
+        app:constraint_referenced_ids="iv_no_results, tv_no_search_result_title, tv_no_search_result_desc"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
