@@ -3,8 +3,9 @@ package com.blaze.moviesapp.domain.use_case
 import com.blaze.moviesapp.domain.models.GenresResponse
 import com.blaze.moviesapp.domain.repositories.Repository
 import retrofit2.Response
+import javax.inject.Inject
 
-class GetGenresUseCase(
+class GetGenresUseCase @Inject constructor(
     private val repository: Repository
 ) {
 

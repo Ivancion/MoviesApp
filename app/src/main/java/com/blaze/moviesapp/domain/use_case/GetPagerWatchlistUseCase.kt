@@ -5,8 +5,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.blaze.moviesapp.domain.models.Movie
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetPagerWatchlistUseCase(
+class GetPagerWatchlistUseCase @Inject constructor(
     private val getMovieWatchlistUseCase: GetMovieWatchlistUseCase,
     private val getGenresUseCase: GetGenresUseCase
 ) {

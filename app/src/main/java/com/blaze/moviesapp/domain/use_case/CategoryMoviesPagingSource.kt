@@ -5,8 +5,9 @@ import androidx.paging.PagingState
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import com.blaze.moviesapp.other.MovieCategory
+import javax.inject.Inject
 
-class CategoryMoviesPagingSource(
+class CategoryMoviesPagingSource @Inject constructor(
     private val getMoviesByCategoryUseCase: GetMoviesByCategoryUseCase,
     private val category: MovieCategory
 ): PagingSource<Int, Movie>() {

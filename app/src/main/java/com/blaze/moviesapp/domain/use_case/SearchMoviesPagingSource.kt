@@ -6,8 +6,9 @@ import com.blaze.moviesapp.domain.models.Genre
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import retrofit2.HttpException
+import javax.inject.Inject
 
-class SearchMoviesPagingSource(
+class SearchMoviesPagingSource @Inject constructor(
     private val searchMoviesUseCase: SearchMoviesUseCase,
     private val getGenresUseCase: GetGenresUseCase,
     private val query: String,

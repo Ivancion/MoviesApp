@@ -2,8 +2,9 @@ package com.blaze.moviesapp.domain.use_case
 
 import com.blaze.moviesapp.domain.models.ApiConfigResponse
 import com.blaze.moviesapp.domain.repositories.Repository
+import javax.inject.Inject
 
-class GetApiConfigurationUseCase(
+class GetApiConfigurationUseCase @Inject constructor(
     private val repository: Repository
 ) {
 

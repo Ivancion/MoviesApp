@@ -6,8 +6,9 @@ import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import com.blaze.moviesapp.other.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class GetMovieDetailUseCase(
+class GetMovieDetailUseCase @Inject constructor(
     private val repository: Repository
 ) {
 

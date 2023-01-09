@@ -7,8 +7,9 @@ import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import com.blaze.moviesapp.other.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
-class LoginUserUseCase(
+class LoginUserUseCase @Inject constructor(
     private val repository: Repository
 ) {
     operator fun invoke(username: String, password: String, rememberUser: Boolean) : Flow<Resource<Unit>> {

@@ -6,8 +6,9 @@ import androidx.paging.PagingData
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.other.MovieCategory
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetPagerHomeScreenUseCase(
+class GetPagerHomeScreenUseCase @Inject constructor(
     private val getMoviesByCategoryUseCase: GetMoviesByCategoryUseCase
 ) {
 

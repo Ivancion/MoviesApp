@@ -5,8 +5,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.blaze.moviesapp.domain.models.Movie
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetPagerSearchScreenUseCase(
+class GetPagerSearchScreenUseCase @Inject constructor(
     private val searchMoviesUseCase: SearchMoviesUseCase,
     private val getGenresUseCase: GetGenresUseCase,
 ) {

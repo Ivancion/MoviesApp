@@ -4,8 +4,9 @@ import com.blaze.moviesapp.domain.models.MoviesResponse
 import com.blaze.moviesapp.domain.repositories.Repository
 import com.blaze.moviesapp.other.MovieCategory
 import retrofit2.Response
+import javax.inject.Inject
 
-class GetMoviesByCategoryUseCase(
+class GetMoviesByCategoryUseCase @Inject constructor(
     private val repository: Repository
 ) {
 
