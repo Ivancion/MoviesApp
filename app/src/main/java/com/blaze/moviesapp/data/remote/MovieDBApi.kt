@@ -10,23 +10,6 @@ import retrofit2.http.*
 
 interface MovieDBApi {
 
-    @GET("authentication/token/new")
-    suspend fun getRequestToken(
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY
-    ): RequestTokenResponse
-
-    @POST("authentication/token/validate_with_login")
-    suspend fun createSessionWithLogin(
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Body userLoginInfo: SessionWithLoginRequest
-    ): RequestTokenResponse
-
-    @POST("authentication/session/new")
-    suspend fun createSessionId(
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Body sessionRequest: SessionRequest
-    ): SessionResponse
-
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(
         @Query("api_key") apiKey: String = BuildConfig.API_KEY,
@@ -114,10 +97,4 @@ interface MovieDBApi {
         @Query("sort_by") sortBy: String = DESC,
         @Query("page") page: Int = 1
     ) : MoviesResponse
-
-    @HTTP(method = "DELETE", path = "authentication/session", hasBody = true)
-    suspend fun deleteSession(
-        @Query("api_key") apiKey: String = BuildConfig.API_KEY,
-        @Body deleteSessionRequest: DeleteSessionRequest
-    ) : DeleteSessionResponse
 }

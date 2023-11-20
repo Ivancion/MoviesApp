@@ -3,22 +3,21 @@ package com.blaze.moviesapp.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.blaze.moviesapp.data.local.*
+import com.blaze.moviesapp.data.remote.LoginApi
 import com.blaze.moviesapp.data.remote.MovieDBApi
-import com.blaze.moviesapp.data.repositories.RepositoryImpl
-import com.blaze.moviesapp.domain.repositories.Repository
+import com.blaze.moviesapp.data.repositories.LoginRepositoryImpl
+import com.blaze.moviesapp.data.repositories.MoviesRepositoryImpl
+import com.blaze.moviesapp.domain.repositories.LoginRepository
+import com.blaze.moviesapp.domain.repositories.MoviesRepository
 import com.blaze.moviesapp.other.Constants.BASE_URL
 import com.blaze.moviesapp.other.Constants.SHARED_PREFS_NAME
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -37,8 +36,12 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRequestToken(): IRequestToken {
-        return RequestToken()
+    fun provideLoginApi(): LoginApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(LoginApi::class.java)
     }
 
     @Singleton
@@ -73,17 +76,25 @@ object AppModule {
     @Provides
     fun provideRepository(
         api: MovieDBApi,
-        iSystemPreferences: ISystemPreferences,
-        iSessionId: ISessionId,
-        iRequestToken: IRequestToken,
         iApiConfiguration: IApiConfiguration
-    ) : Repository {
-        return RepositoryImpl(
+    ) : MoviesRepository {
+        return MoviesRepositoryImpl(
             api = api,
-            iRequestToken = iRequestToken,
-            iSessionId = iSessionId,
-            iSystemPreferences = iSystemPreferences,
             iApiConfiguration = iApiConfiguration
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideLoginRepository(
+        api: LoginApi,
+        iSessionId: ISessionId,
+        iSystemPreferences: ISystemPreferences
+    ): LoginRepository {
+        return LoginRepositoryImpl(
+            api = api,
+            iSessionId = iSessionId,
+            systemPreferences = iSystemPreferences
         )
     }
 
