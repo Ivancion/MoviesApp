@@ -1,7 +1,7 @@
 package com.blaze.moviesapp.domain.use_case
 
 import com.blaze.moviesapp.domain.models.AddToWatchlistResponse
-import com.blaze.moviesapp.domain.repositories.LoginRepository
+import com.blaze.moviesapp.domain.repositories.AuthRepository
 import com.blaze.moviesapp.domain.repositories.MoviesRepository
 import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import com.blaze.moviesapp.other.Resource
@@ -11,11 +11,11 @@ import javax.inject.Inject
 
 class AddToWatchlistUseCase @Inject constructor(
     private val moviesRepository: MoviesRepository,
-    private val loginRepository: LoginRepository
+    private val authRepository: AuthRepository
 ) {
 
     operator fun invoke(add: Boolean, movieId: Int) : Flow<Resource<AddToWatchlistResponse>> {
-        val sessionId = loginRepository.getSessionId()
+        val sessionId = authRepository.getSessionId()
         return flow {
             emit(Resource.LoadingState)
             runCatching {

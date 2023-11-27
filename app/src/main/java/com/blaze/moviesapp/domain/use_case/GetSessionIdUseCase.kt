@@ -1,13 +1,13 @@
 package com.blaze.moviesapp.domain.use_case
 
-import com.blaze.moviesapp.domain.repositories.LoginRepository
+import com.blaze.moviesapp.domain.repositories.AuthRepository
 import javax.inject.Inject
 
 class GetSessionIdUseCase @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val authRepository: AuthRepository
 ) {
 
     operator fun invoke(): String {
-        return loginRepository.getSessionId()
+        return authRepository.getSessionId()
     }
 }

@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import com.blaze.moviesapp.data.local.*
 import com.blaze.moviesapp.data.remote.LoginApi
 import com.blaze.moviesapp.data.remote.MovieDBApi
-import com.blaze.moviesapp.data.repositories.LoginRepositoryImpl
+import com.blaze.moviesapp.data.repositories.AuthRepositoryImpl
 import com.blaze.moviesapp.data.repositories.MoviesRepositoryImpl
-import com.blaze.moviesapp.domain.repositories.LoginRepository
+import com.blaze.moviesapp.domain.repositories.AuthRepository
 import com.blaze.moviesapp.domain.repositories.MoviesRepository
 import com.blaze.moviesapp.other.Constants.BASE_URL
 import com.blaze.moviesapp.other.Constants.SHARED_PREFS_NAME
@@ -90,8 +90,8 @@ object AppModule {
         api: LoginApi,
         iSessionId: ISessionId,
         iSystemPreferences: ISystemPreferences
-    ): LoginRepository {
-        return LoginRepositoryImpl(
+    ): AuthRepository {
+        return AuthRepositoryImpl(
             api = api,
             iSessionId = iSessionId,
             systemPreferences = iSystemPreferences

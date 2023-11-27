@@ -1,10 +1,8 @@
 package com.blaze.moviesapp.ui.login
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blaze.moviesapp.domain.use_case.LoginUserUseCase
-import com.blaze.moviesapp.other.Constants
 import com.blaze.moviesapp.other.Constants.INVALID_LOGIN_DATA
 import com.blaze.moviesapp.other.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel

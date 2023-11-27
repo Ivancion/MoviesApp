@@ -13,6 +13,7 @@ import com.blaze.moviesapp.domain.use_case.DeleteSessionUseCase
 import com.blaze.moviesapp.domain.use_case.GetApiConfigurationUseCase
 import com.blaze.moviesapp.domain.use_case.GetPagerHomeScreenUseCase
 import com.blaze.moviesapp.domain.use_case.GetTrendingMoviesUseCase
+import com.blaze.moviesapp.other.AuthResult
 import com.blaze.moviesapp.other.Constants.NOW_PLAYING
 import com.blaze.moviesapp.other.Constants.POPULAR
 import com.blaze.moviesapp.other.Constants.TOP_RATED
@@ -80,18 +81,15 @@ class HomeViewModel @Inject constructor(
 
     fun deleteSession() {
         viewModelScope.launch {
-            deleteSessionUseCase().collect {
-                when(it) {
-                    is Resource.Success -> {
-                        if(it.data.success == true) {
-                            _isSessionDeleted.emit(true)
-                        }
+            when(val response = deleteSessionUseCase()) {
+                is AuthResult.Success -> {
+                    if(response.data.success == true) {
+                        _isSessionDeleted.emit(true)
                     }
-                    is Resource.Error -> {
-                        Log.d("Error", it.exception)
-                        _serverError.emit(true)
-                    }
-                    is Resource.LoadingState -> {}
+                }
+                is AuthResult.Error -> {
+                    Log.d("Error", response.message)
+                    _serverError.emit(true)
                 }
             }
         }

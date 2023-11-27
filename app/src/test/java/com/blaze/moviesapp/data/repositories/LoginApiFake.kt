@@ -21,7 +21,13 @@ class LoginApiFake: LoginApi {
         sessionId = "test_session_id"
     )
 
+    var shouldThrowError = false
+    var errorMessage = "Test error"
+
     override suspend fun getRequestToken(apiKey: String): RequestTokenResponse {
+        if(shouldThrowError) {
+            throw Exception(errorMessage)
+        }
         return tokenResponse
     }
 
@@ -29,6 +35,9 @@ class LoginApiFake: LoginApi {
         apiKey: String,
         userLoginInfo: SessionWithLoginRequest
     ): RequestTokenResponse {
+        if(shouldThrowError) {
+            throw Exception(errorMessage)
+        }
         return tokenResponse
     }
 
@@ -36,6 +45,9 @@ class LoginApiFake: LoginApi {
         apiKey: String,
         sessionRequest: SessionRequest
     ): SessionResponse {
+        if(shouldThrowError) {
+            throw Exception(errorMessage)
+        }
         return sessionResponse
     }
 
@@ -43,6 +55,9 @@ class LoginApiFake: LoginApi {
         apiKey: String,
         deleteSessionRequest: DeleteSessionRequest
     ): DeleteSessionResponse {
+        if(shouldThrowError) {
+            throw Exception(errorMessage)
+        }
         sessionResponse = sessionResponse.copy(
             sessionId = null
         )

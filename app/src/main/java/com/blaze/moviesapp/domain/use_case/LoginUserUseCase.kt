@@ -1,16 +1,16 @@
 package com.blaze.moviesapp.domain.use_case
 
-import com.blaze.moviesapp.domain.repositories.LoginRepository
+import com.blaze.moviesapp.domain.repositories.AuthRepository
+import com.blaze.moviesapp.other.AuthResult
 import com.blaze.moviesapp.other.Constants.INVALID_LOGIN_DATA
 import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import com.blaze.moviesapp.other.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.io.IOException
 import javax.inject.Inject
 
 class LoginUserUseCase @Inject constructor(
-    private val loginRepository: LoginRepository
+    private val authRepository: AuthRepository
 ) {
     operator fun invoke(
         username: String,
@@ -19,23 +19,37 @@ class LoginUserUseCase @Inject constructor(
     ): Flow<Resource<Unit>> {
         return flow {
             emit(Resource.LoadingState)
-            try {
-                val requestToken = loginRepository.getRequestToken()
-                val loginRequestToken = loginRepository.createSessionWithLogin(
-                    username,
-                    password,
-                    requestToken.requestToken!!
-                )
-                loginRepository.createSessionId(loginRequestToken.requestToken!!)
-                if(rememberUser) {
-                    loginRepository.saveSessionId()
+            val requestTokenResponse = authRepository.getRequestToken()
+            when(requestTokenResponse) {
+                is AuthResult.Success -> {
+                    val loginRequestTokenResponse = authRepository.createSessionWithLogin(
+                        username,
+                        password,
+                        requestTokenResponse.data.requestToken!!
+                    )
+                    when(loginRequestTokenResponse) {
+                        is AuthResult.Success -> {
+                            val createSessionResponse =
+                                authRepository.createSessionId(loginRequestTokenResponse.data.requestToken!!)
+                            when(createSessionResponse) {
+                                is AuthResult.Success -> {
+                                    if(rememberUser) {
+                                        authRepository.saveSessionId()
+                                    }
+                                    emit(Resource.Success(Unit))
+                                }
+                                is AuthResult.Error -> {
+                                    emit(Resource.Error(createSessionResponse.message))
+                                }
+                            }
+                        }
+                        is AuthResult.Error -> {
+                            emit(Resource.Error(loginRequestTokenResponse.message))
+                        }
+                    }
                 }
-                emit(Resource.Success(Unit))
-            } catch (e: Exception) {
-                if(e.message?.contains("401") == true) {
-                    emit(Resource.Error(INVALID_LOGIN_DATA))
-                } else {
-                    emit(Resource.Error(e.localizedMessage ?: e.message ?: UNKNOWN_ERROR))
+                is AuthResult.Error -> {
+                    emit(Resource.Error(requestTokenResponse.message))
                 }
             }
         }
