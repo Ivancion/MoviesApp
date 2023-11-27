@@ -7,7 +7,7 @@ import androidx.paging.cachedIn
 import com.blaze.moviesapp.domain.models.ApiConfigResponse
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.domain.use_case.GetApiConfigurationUseCase
-import com.blaze.moviesapp.domain.use_case.GetPagerSearchScreenUseCase
+import com.blaze.moviesapp.domain.use_case.GetSearchMoviesPagingFlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val getApiConfigurationUseCase: GetApiConfigurationUseCase,
-    private val getPagerSearchScreenUseCase: GetPagerSearchScreenUseCase
+    private val getSearchMoviesPagingFlowUseCase: GetSearchMoviesPagingFlowUseCase
 ): ViewModel() {
 
     private val _searchMoviesPageResponse = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
@@ -35,7 +35,7 @@ class SearchViewModel @Inject constructor(
             return
         searchJob = viewModelScope.launch {
             delay(500)
-            getPagerSearchScreenUseCase(
+            getSearchMoviesPagingFlowUseCase(
                 query
             ) {
                 _isEmptyResponse.value = it

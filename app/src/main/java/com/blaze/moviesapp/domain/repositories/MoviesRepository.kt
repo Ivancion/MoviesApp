@@ -1,6 +1,14 @@
 package com.blaze.moviesapp.domain.repositories
 
-import com.blaze.moviesapp.domain.models.*
+import androidx.paging.PagingData
+import com.blaze.moviesapp.domain.models.AccountDetails
+import com.blaze.moviesapp.domain.models.AddToWatchlistResponse
+import com.blaze.moviesapp.domain.models.ApiConfigResponse
+import com.blaze.moviesapp.domain.models.Movie
+import com.blaze.moviesapp.domain.models.MovieDetail
+import com.blaze.moviesapp.domain.models.MovieState
+import com.blaze.moviesapp.domain.models.MoviesResponse
+import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
@@ -13,13 +21,6 @@ interface MoviesRepository {
     suspend fun getPopularMovies(page: Int): MoviesResponse
 
     suspend fun getTrendingMovies(): MoviesResponse
-
-    suspend fun searchMovies(
-        query: String,
-        page: Int
-    ) : MoviesResponse
-
-    suspend fun getGenres(): GenresResponse
 
     suspend fun getMovieDetail(id: Int): MovieDetail
 
@@ -38,9 +39,13 @@ interface MoviesRepository {
 
     suspend fun getAccountDetails(sessionId: String): AccountDetails
 
-    suspend fun getMovieWatchlist(
-        accountId: Int,
-        page: Int,
-        sessionId: String
-    ): MoviesResponse
+    fun getWatchlistPagingFlow(
+        sessionId: String,
+        emptyResponse: (Boolean) -> Unit
+    ): Flow<PagingData<Movie>>
+
+    fun getSearchMoviesPagingFlow(
+        query: String,
+        emptyResponse: (Boolean) -> Unit
+    ): Flow<PagingData<Movie>>
 }

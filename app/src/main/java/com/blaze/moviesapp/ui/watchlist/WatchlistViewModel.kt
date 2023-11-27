@@ -7,7 +7,7 @@ import androidx.paging.cachedIn
 import com.blaze.moviesapp.domain.models.ApiConfigResponse
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.domain.use_case.GetApiConfigurationUseCase
-import com.blaze.moviesapp.domain.use_case.GetPagerWatchlistUseCase
+import com.blaze.moviesapp.domain.use_case.GetWatchlistPagingFlowUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WatchlistViewModel @Inject constructor(
-    private val getPagerWatchlistUseCase: GetPagerWatchlistUseCase,
+    private val getWatchlistPagingFlowUseCase: GetWatchlistPagingFlowUseCase,
     private val getApiConfigurationUseCase: GetApiConfigurationUseCase
 ): ViewModel() {
 
@@ -28,7 +28,7 @@ class WatchlistViewModel @Inject constructor(
 
     fun getWatchlist() {
         viewModelScope.launch {
-            getPagerWatchlistUseCase {
+            getWatchlistPagingFlowUseCase {
                 _isEmptyResponse.value = it
             }.cachedIn(viewModelScope).collect {
                 _watchlistPagingData.value = it

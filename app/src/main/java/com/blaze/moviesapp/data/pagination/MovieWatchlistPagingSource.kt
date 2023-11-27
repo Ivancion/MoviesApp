@@ -1,15 +1,17 @@
-package com.blaze.moviesapp.domain.use_case
+package com.blaze.moviesapp.data.pagination
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.blaze.moviesapp.data.remote.MovieDBApi
 import com.blaze.moviesapp.domain.models.Genre
 import com.blaze.moviesapp.domain.models.Movie
+import com.blaze.moviesapp.domain.models.MoviesResponse
 import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import javax.inject.Inject
 
 class MovieWatchlistPagingSource @Inject constructor(
-    private val getMovieWatchlistUseCase: GetMovieWatchlistUseCase,
-    private val getGenresUseCase: GetGenresUseCase,
+    private val sessionId: String,
+    private val movieApi: MovieDBApi,
     private val emptyResponse: (Boolean) -> Unit
 ): PagingSource<Int, Movie>() {
 
@@ -23,8 +25,8 @@ class MovieWatchlistPagingSource @Inject constructor(
         val page: Int = params.key ?: 1
 
         return try {
-            val movieResponse = getMovieWatchlistUseCase(page)
-            val genres = getGenresUseCase().genres
+            val movieResponse = getMovieWatchlistByPage(page)
+            val genres = getGenres()
             if(page == 1)
                 emptyResponse(movieResponse?.results?.size == 0)
             movieResponse?.results?.forEach {
@@ -39,6 +41,24 @@ class MovieWatchlistPagingSource @Inject constructor(
             LoadResult.Page(checkNotNull(movieResponse?.results), prevKey, nextKey)
         } catch (e: Exception) {
             LoadResult.Error(Throwable(e.localizedMessage ?: e.message ?: UNKNOWN_ERROR))
+        }
+    }
+
+    private suspend fun getGenres(): List<Genre> {
+        return movieApi.getGenres().genres
+    }
+
+    private suspend fun getMovieWatchlistByPage(page: Int): MoviesResponse? {
+        return try {
+            val accountDetails = movieApi.getAccountDetails(sessionId = sessionId)
+            val accountId = accountDetails.id ?: 0
+            movieApi.getMovieWatchlist(
+                accountId = accountId,
+                page = page,
+                sessionId = sessionId
+            )
+        } catch (e: Exception) {
+            null
         }
     }
 

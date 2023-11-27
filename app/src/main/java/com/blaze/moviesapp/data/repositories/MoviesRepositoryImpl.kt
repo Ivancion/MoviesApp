@@ -1,10 +1,23 @@
 package com.blaze.moviesapp.data.repositories
 
-import com.blaze.moviesapp.data.local.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import com.blaze.moviesapp.data.local.IApiConfiguration
+import com.blaze.moviesapp.data.pagination.MovieWatchlistPagingSource
+import com.blaze.moviesapp.data.pagination.SearchMoviesPagingSource
 import com.blaze.moviesapp.data.remote.MovieDBApi
-import com.blaze.moviesapp.domain.models.*
+import com.blaze.moviesapp.domain.models.AccountDetails
+import com.blaze.moviesapp.domain.models.AddToWatchlistRequest
+import com.blaze.moviesapp.domain.models.AddToWatchlistResponse
+import com.blaze.moviesapp.domain.models.ApiConfigResponse
+import com.blaze.moviesapp.domain.models.Movie
+import com.blaze.moviesapp.domain.models.MovieDetail
+import com.blaze.moviesapp.domain.models.MovieState
+import com.blaze.moviesapp.domain.models.MoviesResponse
 import com.blaze.moviesapp.domain.repositories.MoviesRepository
 import com.blaze.moviesapp.other.Constants.MOVIE
+import kotlinx.coroutines.flow.Flow
 
 // TODO Need to move error handling logic to repository from use cases
 class MoviesRepositoryImpl(
@@ -28,20 +41,8 @@ class MoviesRepositoryImpl(
         return api.getPopularMovies(page = page)
     }
 
-
     override suspend fun getTrendingMovies(): MoviesResponse {
         return api.getTrendingMovies()
-    }
-
-    override suspend fun searchMovies(query: String, page: Int): MoviesResponse {
-        return api.searchMovies(
-            query = query,
-            page = page
-        )
-    }
-
-    override suspend fun getGenres(): GenresResponse {
-        return api.getGenres()
     }
 
     override suspend fun getMovieDetail(id: Int): MovieDetail {
@@ -89,11 +90,40 @@ class MoviesRepositoryImpl(
         )
     }
 
-    override suspend fun getMovieWatchlist(accountId: Int, page: Int, sessionId: String): MoviesResponse {
-        return api.getMovieWatchlist(
-            accountId = accountId,
-            sessionId = sessionId,
-            page = page
-        )
+    override fun getWatchlistPagingFlow(
+        sessionId: String,
+        emptyResponse: (Boolean) -> Unit
+    ): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20
+            ),
+            pagingSourceFactory = {
+                MovieWatchlistPagingSource(
+                    sessionId = sessionId,
+                    movieApi = api,
+                    emptyResponse = emptyResponse
+                )
+            }
+        ).flow
+    }
+
+    override fun getSearchMoviesPagingFlow(
+        query: String,
+        emptyResponse: (Boolean) -> Unit
+    ): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                initialLoadSize = 20
+            ),
+            pagingSourceFactory = {
+                SearchMoviesPagingSource(
+                    movieApi = api,
+                    query = query,
+                    emptyResponse = emptyResponse
+                )
+            }
+        ).flow
     }
 }
