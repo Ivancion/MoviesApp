@@ -11,7 +11,7 @@ import com.blaze.moviesapp.domain.models.ApiConfigResponse
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.domain.use_case.DeleteSessionUseCase
 import com.blaze.moviesapp.domain.use_case.GetApiConfigurationUseCase
-import com.blaze.moviesapp.domain.use_case.GetPagerHomeScreenUseCase
+import com.blaze.moviesapp.domain.use_case.GetCategoryMoviesPagingFlowUseCase
 import com.blaze.moviesapp.domain.use_case.GetTrendingMoviesUseCase
 import com.blaze.moviesapp.other.AuthResult
 import com.blaze.moviesapp.other.Constants.NOW_PLAYING
@@ -29,7 +29,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getApiConfigurationUseCase: GetApiConfigurationUseCase,
     private val getTrendingMoviesUseCase: GetTrendingMoviesUseCase,
-    private val getPagerHomeScreenUseCase: GetPagerHomeScreenUseCase,
+    private val getCategoryMoviesPagingFlowUseCase: GetCategoryMoviesPagingFlowUseCase,
     private val deleteSessionUseCase: DeleteSessionUseCase
 ): ViewModel() {
 
@@ -58,7 +58,7 @@ class HomeViewModel @Inject constructor(
 
     fun getMoviesByCategory(category: MovieCategory) {
         viewModelScope.launch {
-            getPagerHomeScreenUseCase(
+            getCategoryMoviesPagingFlowUseCase(
                 category
             ).cachedIn(viewModelScope).collect {
                 _categoryMoviesPageResponse.value = it

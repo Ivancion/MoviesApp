@@ -1,43 +1,33 @@
 package com.blaze.moviesapp.domain.repositories
 
 import androidx.paging.PagingData
-import com.blaze.moviesapp.domain.models.AccountDetails
 import com.blaze.moviesapp.domain.models.AddToWatchlistResponse
 import com.blaze.moviesapp.domain.models.ApiConfigResponse
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.domain.models.MovieDetail
 import com.blaze.moviesapp.domain.models.MovieState
 import com.blaze.moviesapp.domain.models.MoviesResponse
+import com.blaze.moviesapp.other.MovieCategory
+import com.blaze.moviesapp.other.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface MoviesRepository {
 
-    suspend fun getTopRatedMovies(page: Int): MoviesResponse
+    fun getTrendingMovies(): Flow<Resource<MoviesResponse>>
 
-    suspend fun getNowPlayingMovies(page: Int): MoviesResponse
+    fun getMovieDetail(id: Int): Flow<Resource<MovieDetail>>
 
-    suspend fun getUpcomingMovies(page: Int): MoviesResponse
-
-    suspend fun getPopularMovies(page: Int): MoviesResponse
-
-    suspend fun getTrendingMovies(): MoviesResponse
-
-    suspend fun getMovieDetail(id: Int): MovieDetail
-
-    suspend fun loadApiConfiguration(): ApiConfigResponse
+    fun loadApiConfiguration(): Flow<Resource<Unit>>
 
     fun getApiConfiguration(): ApiConfigResponse
 
-    suspend fun getMovieStates(movieId: Int, sessionId: String) : MovieState
+    fun getMovieStates(movieId: Int, sessionId: String): Flow<Resource<MovieState>>
 
-    suspend fun addToWatchlist(
-        accountId: Int,
+    fun addToWatchlist(
         add: Boolean,
         movieId: Int,
         sessionId: String
-    ) : AddToWatchlistResponse
-
-    suspend fun getAccountDetails(sessionId: String): AccountDetails
+    ): Flow<Resource<AddToWatchlistResponse>>
 
     fun getWatchlistPagingFlow(
         sessionId: String,
@@ -47,5 +37,9 @@ interface MoviesRepository {
     fun getSearchMoviesPagingFlow(
         query: String,
         emptyResponse: (Boolean) -> Unit
+    ): Flow<PagingData<Movie>>
+
+    fun getCategoryMoviesPagingFlow(
+        category: MovieCategory
     ): Flow<PagingData<Movie>>
 }

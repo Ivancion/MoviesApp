@@ -8,7 +8,7 @@ import com.blaze.moviesapp.other.Constants.REVIEWS_AND_CREDITS
 import com.blaze.moviesapp.other.Constants.WEEK
 import retrofit2.http.*
 
-interface MovieDBApi {
+interface MovieService {
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(

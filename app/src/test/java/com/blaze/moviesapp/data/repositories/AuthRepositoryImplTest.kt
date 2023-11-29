@@ -15,18 +15,18 @@ import org.junit.jupiter.api.Test
 class AuthRepositoryImplTest {
 
     private lateinit var authRepository: AuthRepositoryImpl
-    private lateinit var loginApi: LoginApiFake
+    private lateinit var loginApi: LoginServiceFake
     private lateinit var sessionId: ISessionId
     private lateinit var systemPreferences: SystemPreferencesFake
 
     @BeforeEach
     fun setUp() {
-        loginApi = LoginApiFake()
+        loginApi = LoginServiceFake()
         sessionId = SessionId()
         systemPreferences = SystemPreferencesFake()
 
         authRepository = AuthRepositoryImpl(
-            api = loginApi,
+            loginService = loginApi,
             iSessionId = sessionId,
             systemPreferences = systemPreferences
         )

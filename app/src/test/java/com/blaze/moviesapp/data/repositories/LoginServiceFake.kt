@@ -1,6 +1,6 @@
 package com.blaze.moviesapp.data.repositories
 
-import com.blaze.moviesapp.data.remote.LoginApi
+import com.blaze.moviesapp.data.remote.LoginService
 import com.blaze.moviesapp.domain.models.DeleteSessionRequest
 import com.blaze.moviesapp.domain.models.DeleteSessionResponse
 import com.blaze.moviesapp.domain.models.RequestTokenResponse
@@ -8,7 +8,7 @@ import com.blaze.moviesapp.domain.models.SessionRequest
 import com.blaze.moviesapp.domain.models.SessionResponse
 import com.blaze.moviesapp.domain.models.SessionWithLoginRequest
 
-class LoginApiFake: LoginApi {
+class LoginServiceFake: LoginService {
 
     var tokenResponse = RequestTokenResponse(
         success = true,

@@ -4,10 +4,10 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.blaze.moviesapp.data.local.IApiConfiguration
+import com.blaze.moviesapp.data.pagination.CategoryMoviesPagingSource
 import com.blaze.moviesapp.data.pagination.MovieWatchlistPagingSource
 import com.blaze.moviesapp.data.pagination.SearchMoviesPagingSource
-import com.blaze.moviesapp.data.remote.MovieDBApi
-import com.blaze.moviesapp.domain.models.AccountDetails
+import com.blaze.moviesapp.data.remote.MovieService
 import com.blaze.moviesapp.domain.models.AddToWatchlistRequest
 import com.blaze.moviesapp.domain.models.AddToWatchlistResponse
 import com.blaze.moviesapp.domain.models.ApiConfigResponse
@@ -16,42 +16,53 @@ import com.blaze.moviesapp.domain.models.MovieDetail
 import com.blaze.moviesapp.domain.models.MovieState
 import com.blaze.moviesapp.domain.models.MoviesResponse
 import com.blaze.moviesapp.domain.repositories.MoviesRepository
+import com.blaze.moviesapp.other.Constants
 import com.blaze.moviesapp.other.Constants.MOVIE
+import com.blaze.moviesapp.other.MovieCategory
+import com.blaze.moviesapp.other.Resource
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
-// TODO Need to move error handling logic to repository from use cases
 class MoviesRepositoryImpl(
-    private val api: MovieDBApi,
+    private val movieService: MovieService,
     private val iApiConfiguration: IApiConfiguration
-): MoviesRepository {
+) : MoviesRepository {
 
-    override suspend fun getTopRatedMovies(page: Int): MoviesResponse {
-        return api.getTopRatedMovies(page = page)
+    override fun getTrendingMovies(): Flow<Resource<MoviesResponse>> {
+        return flow {
+            emit(Resource.LoadingState)
+            try {
+                val response = movieService.getTrendingMovies()
+                emit(Resource.Success(response))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.localizedMessage ?: e.message ?: Constants.UNKNOWN_ERROR))
+            }
+        }
     }
 
-    override suspend fun getNowPlayingMovies(page: Int): MoviesResponse  {
-        return api.getNowPlayingMovies(page = page)
+    override fun getMovieDetail(id: Int): Flow<Resource<MovieDetail>> {
+        return flow {
+            emit(Resource.LoadingState)
+            try {
+                val response = movieService.getMovieDetail(id)
+                emit(Resource.Success(response))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.localizedMessage ?: e.message ?: Constants.UNKNOWN_ERROR))
+            }
+        }
     }
 
-    override suspend fun getUpcomingMovies(page: Int): MoviesResponse  {
-        return api.getUpcomingMovies(page = page)
-    }
-
-    override suspend fun getPopularMovies(page: Int): MoviesResponse  {
-        return api.getPopularMovies(page = page)
-    }
-
-    override suspend fun getTrendingMovies(): MoviesResponse {
-        return api.getTrendingMovies()
-    }
-
-    override suspend fun getMovieDetail(id: Int): MovieDetail {
-        return api.getMovieDetail(id)
-    }
-
-    override suspend fun loadApiConfiguration(): ApiConfigResponse {
-        return api.loadApiConfiguration().also {
-            iApiConfiguration.setConfigurationData(it)
+    override fun loadApiConfiguration(): Flow<Resource<Unit>> {
+        return flow {
+            emit(Resource.LoadingState)
+            try {
+                movieService.loadApiConfiguration().also {
+                    iApiConfiguration.setConfigurationData(it)
+                }
+                emit(Resource.Success(Unit))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.localizedMessage ?: e.message ?: Constants.UNKNOWN_ERROR))
+            }
         }
     }
 
@@ -59,35 +70,44 @@ class MoviesRepositoryImpl(
         return iApiConfiguration.configurationData
     }
 
-    override suspend fun getMovieStates(movieId: Int, sessionId: String) : MovieState {
-        return api.getMovieStates(
-            movieId = movieId,
-            sessionId = sessionId
-        )
+    override fun getMovieStates(movieId: Int, sessionId: String): Flow<Resource<MovieState>> {
+        return flow {
+            emit(Resource.LoadingState)
+            try {
+                val response = movieService.getMovieStates(
+                    movieId = movieId,
+                    sessionId = sessionId
+                )
+                emit(Resource.Success(response))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.localizedMessage ?: e.message ?: Constants.UNKNOWN_ERROR))
+            }
+        }
     }
 
-    override suspend fun addToWatchlist(
-        accountId: Int,
+    override fun addToWatchlist(
         add: Boolean,
         movieId: Int,
         sessionId: String
-    ) : AddToWatchlistResponse {
-
-        return api.addToWatchlist(
-            accountId = accountId,
-            sessionId = sessionId,
-            addToWatchlistRequest = AddToWatchlistRequest(
-                mediaType = MOVIE,
-                mediaId = movieId,
-                watchlist = add
-            )
-        )
-    }
-
-    override suspend fun getAccountDetails(sessionId: String): AccountDetails {
-        return api.getAccountDetails(
-            sessionId = sessionId
-        )
+    ): Flow<Resource<AddToWatchlistResponse>> {
+        return flow {
+            emit(Resource.LoadingState)
+            try {
+                val accountDetails = movieService.getAccountDetails(sessionId = sessionId)
+                val response = movieService.addToWatchlist(
+                    accountId = accountDetails.id ?: 0,
+                    sessionId = sessionId,
+                    addToWatchlistRequest = AddToWatchlistRequest(
+                        mediaType = MOVIE,
+                        mediaId = movieId,
+                        watchlist = add
+                    )
+                )
+                emit(Resource.Success(response))
+            } catch (e: Exception) {
+                emit(Resource.Error(e.localizedMessage ?: e.message ?: Constants.UNKNOWN_ERROR))
+            }
+        }
     }
 
     override fun getWatchlistPagingFlow(
@@ -101,7 +121,7 @@ class MoviesRepositoryImpl(
             pagingSourceFactory = {
                 MovieWatchlistPagingSource(
                     sessionId = sessionId,
-                    movieApi = api,
+                    movieService = movieService,
                     emptyResponse = emptyResponse
                 )
             }
@@ -119,9 +139,25 @@ class MoviesRepositoryImpl(
             ),
             pagingSourceFactory = {
                 SearchMoviesPagingSource(
-                    movieApi = api,
+                    movieService = movieService,
                     query = query,
                     emptyResponse = emptyResponse
+                )
+            }
+        ).flow
+    }
+
+    override fun getCategoryMoviesPagingFlow(
+        category: MovieCategory
+    ): Flow<PagingData<Movie>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = 20
+            ),
+            pagingSourceFactory = {
+                CategoryMoviesPagingSource(
+                    category = category,
+                    movieService = movieService
                 )
             }
         ).flow

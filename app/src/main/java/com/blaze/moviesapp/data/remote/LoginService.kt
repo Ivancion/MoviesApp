@@ -13,7 +13,7 @@ import retrofit2.http.HTTP
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-interface LoginApi {
+interface LoginService {
 
     @GET("authentication/token/new")
     suspend fun getRequestToken(

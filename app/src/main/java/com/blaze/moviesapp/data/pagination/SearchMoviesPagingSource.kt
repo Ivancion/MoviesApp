@@ -2,14 +2,14 @@ package com.blaze.moviesapp.data.pagination
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.blaze.moviesapp.data.remote.MovieDBApi
+import com.blaze.moviesapp.data.remote.MovieService
 import com.blaze.moviesapp.domain.models.Genre
 import com.blaze.moviesapp.domain.models.Movie
 import com.blaze.moviesapp.other.Constants.UNKNOWN_ERROR
 import javax.inject.Inject
 
 class SearchMoviesPagingSource @Inject constructor(
-    private val movieApi: MovieDBApi,
+    private val movieService: MovieService,
     private val query: String,
     private val emptyResponse: (Boolean) -> Unit
 ) : PagingSource<Int, Movie>() {
@@ -24,11 +24,11 @@ class SearchMoviesPagingSource @Inject constructor(
         val page: Int = params.key ?: 1
 
         return try {
-            val response = movieApi.searchMovies(
+            val response = movieService.searchMovies(
                 query = query,
                 page = page
             )
-            val genres = movieApi.getGenres().genres
+            val genres = movieService.getGenres().genres
             if(page == 1)
                 emptyResponse(response.results.isEmpty())
             response.results.forEach {

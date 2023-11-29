@@ -3,8 +3,8 @@ package com.blaze.moviesapp.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.blaze.moviesapp.data.local.*
-import com.blaze.moviesapp.data.remote.LoginApi
-import com.blaze.moviesapp.data.remote.MovieDBApi
+import com.blaze.moviesapp.data.remote.LoginService
+import com.blaze.moviesapp.data.remote.MovieService
 import com.blaze.moviesapp.data.repositories.AuthRepositoryImpl
 import com.blaze.moviesapp.data.repositories.MoviesRepositoryImpl
 import com.blaze.moviesapp.domain.repositories.AuthRepository
@@ -26,22 +26,22 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMovieDBApi(): MovieDBApi {
+    fun provideMovieDBApi(): MovieService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(MovieDBApi::class.java)
+            .create(MovieService::class.java)
     }
 
     @Singleton
     @Provides
-    fun provideLoginApi(): LoginApi {
+    fun provideLoginApi(): LoginService {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(LoginApi::class.java)
+            .create(LoginService::class.java)
     }
 
     @Singleton
@@ -75,11 +75,11 @@ object AppModule {
     @Singleton
     @Provides
     fun provideRepository(
-        api: MovieDBApi,
+        api: MovieService,
         iApiConfiguration: IApiConfiguration
     ) : MoviesRepository {
         return MoviesRepositoryImpl(
-            api = api,
+            movieService = api,
             iApiConfiguration = iApiConfiguration
         )
     }
@@ -87,12 +87,12 @@ object AppModule {
     @Singleton
     @Provides
     fun provideLoginRepository(
-        api: LoginApi,
+        api: LoginService,
         iSessionId: ISessionId,
         iSystemPreferences: ISystemPreferences
     ): AuthRepository {
         return AuthRepositoryImpl(
-            api = api,
+            loginService = api,
             iSessionId = iSessionId,
             systemPreferences = iSystemPreferences
         )

@@ -2,7 +2,7 @@ package com.blaze.moviesapp.data.repositories
 
 import com.blaze.moviesapp.data.local.ISessionId
 import com.blaze.moviesapp.data.local.ISystemPreferences
-import com.blaze.moviesapp.data.remote.LoginApi
+import com.blaze.moviesapp.data.remote.LoginService
 import com.blaze.moviesapp.domain.models.DeleteSessionRequest
 import com.blaze.moviesapp.domain.models.DeleteSessionResponse
 import com.blaze.moviesapp.domain.models.RequestTokenResponse
@@ -15,14 +15,14 @@ import com.blaze.moviesapp.other.Constants
 
 
 class AuthRepositoryImpl(
-    private val api: LoginApi,
+    private val loginService: LoginService,
     private val iSessionId: ISessionId,
     private val systemPreferences: ISystemPreferences,
 ): AuthRepository {
 
     override suspend fun getRequestToken(): AuthResult<RequestTokenResponse> {
         return try {
-            val response = api.getRequestToken()
+            val response = loginService.getRequestToken()
             AuthResult.Success(response)
         } catch (e: Exception) {
             AuthResult.Error(e.localizedMessage ?: e.message ?: Constants.UNKNOWN_ERROR)
@@ -34,7 +34,7 @@ class AuthRepositoryImpl(
         password: String, token: String
     ): AuthResult<RequestTokenResponse> {
         return try {
-            val response = api.createSessionWithLogin(
+            val response = loginService.createSessionWithLogin(
                 userLoginInfo = SessionWithLoginRequest(
                     userName,
                     password,
@@ -53,7 +53,7 @@ class AuthRepositoryImpl(
 
     override suspend fun createSessionId(token: String): AuthResult<SessionResponse> {
         return try {
-            val response = api.createSessionId(
+            val response = loginService.createSessionId(
                 sessionRequest = SessionRequest(token)
             ).also {
                 cacheInMemorySessionId(it)
@@ -76,7 +76,7 @@ class AuthRepositoryImpl(
 
     override suspend fun deleteSession(): AuthResult<DeleteSessionResponse> {
         return try {
-            val response = api.deleteSession(
+            val response = loginService.deleteSession(
                 deleteSessionRequest = DeleteSessionRequest(iSessionId.sessionIdData?.sessionId ?: "")
             ).also {
                 clearSessionCache()
